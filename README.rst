@@ -1,6 +1,6 @@
-==========================
-stackhpc-hardware-managers
-==========================
+==============================
+stackhpc-ipa-hardware-managers
+==============================
 
 .. image:: https://travis-ci.org/stackhpc/stackhpc-ipa-hardware-managers.svg?branch=master
    :target: https://travis-ci.org/stackhpc/stackhpc-ipa-hardware-managers

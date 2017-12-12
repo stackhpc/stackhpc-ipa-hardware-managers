@@ -23,8 +23,15 @@ is expected to be set:
         }
     }
 
+The following example may be used to set the node info:
+
+.. code-block::
+
+    openstack baremetal node set $NODE_ID --extra system_vendor='{"product_name": "PowerEdge R630", "bios_version": "2.6.0"}'
+
 The hardware manager should be supported by any system which supports
 returning the product name and BIOS version via dmidecode.
+
 
 Credits
 -------

@@ -1,6 +1,9 @@
 stackhpc-hardware-managers
 ==========================
 
+.. image:: https://travis-ci.org/stackhpc/stackhpc-ipa-hardware-managers.svg?branch=master
+   :target: https://travis-ci.org/stackhpc/stackhpc-ipa-hardware-managers
+
 A collection of hardware managers for the Ironic Python Agent.
 
 system_bios

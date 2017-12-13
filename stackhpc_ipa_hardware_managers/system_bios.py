@@ -62,15 +62,16 @@ def _update_bios():
     raise errors.CleaningError(_MANUAL_UPDATE_REQUIRED)
 
 
-def _get_expected_property(node, property):
+def _get_expected_property(node, node_property):
     try:
-        expected_property = node['extra']['system_vendor'][property]
+        expected_property = node['extra']['system_vendor'][node_property]
     except KeyError as e:
         raise errors.CleaningError(
             "Expected property '{0}' not found. For cleaning to proceed "
-            "you must set the property '{1}', for example: "
-            "$ openstack baremetal node set $NODE_ID "
-            "--extra system_vendor/{1}=$VALUE".format(e.message, property))
+            "you must set the property 'system_vendor/{1}' in the node's "
+            "extra field, for example: $ openstack baremetal node set "
+            "$NODE_ID --extra system_vendor/{1}=$VALUE".format(e.message,
+                                                               node_property))
     return expected_property
 
 

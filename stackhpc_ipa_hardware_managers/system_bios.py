@@ -23,15 +23,9 @@ from oslo_log import log
 
 LOG = log.getLogger()
 
-_PRODUCT_MISMATCH = ("The product name specified in the node properties does "
-                     "not match the server.")
-_MANUAL_UPDATE_REQUIRED = ("Automatic BIOS update is not implemented; "
-                           "a manual update is required.")
 
-
-def _is_property(dmidecode_property, expected_property):
-    """Check if a system property matches a particular value."""
-    system_property = None
+def _get_property(dmidecode_property):
+    system_property = ''
     try:
         system_property, _e = utils.execute(
             "sudo dmidecode -s {}".format(dmidecode_property),
@@ -41,25 +35,26 @@ def _is_property(dmidecode_property, expected_property):
 
     system_property = system_property.rstrip()
     LOG.debug('System property: {}'.format(system_property))
-    return True if system_property == expected_property else False
+    return system_property
 
 
-def _is_product(expected_product_name):
-    return _is_property('system-product-name',
-                        expected_product_name)
+def _get_product():
+    return _get_property('system-product-name')
 
 
-def _is_bios(expected_bios_version):
-    return _is_property('bios-version',
-                        expected_bios_version)
+def _get_bios():
+    return _get_property('bios-version')
 
 
-def _update_bios():
-    """Update system BIOS.
+def _handle_bios_update(actual_bios_version, expected_bios_version):
+    """Handle system BIOS update stub.
 
-    Future managers may override this to support their particular hardware.
+    Future managers may override this to support automatic updates.
     """
-    raise errors.CleaningError(_MANUAL_UPDATE_REQUIRED)
+    raise errors.CleaningError(
+        "A manual BIOS update is required. Expected version '{0}' but "
+        "version '{1}' was installed".
+        format(expected_bios_version, actual_bios_version))
 
 
 def _get_expected_property(node, node_property):
@@ -103,12 +98,18 @@ class SystemBiosHardwareManager(hardware.HardwareManager):
                  'abortable': True}]
 
     def verify_bios_version(self, node, ports):
-        """Verify the BIOS version"""
+        """Verify the BIOS version.
+
+        To avoid the case where two different products may have the same BIOS
+        version, we also check that the product is as expected.
+        """
         expected_product_name = _get_expected_property(node, 'product_name')
-        product_match = _is_product(expected_product_name)
+        actual_product_name = _get_product()
+        product_match = expected_product_name == actual_product_name
 
         expected_bios_version = _get_expected_property(node, 'bios_version')
-        bios_version_match = _is_bios(expected_bios_version)
+        actual_bios_version = _get_bios()
+        bios_version_match = expected_bios_version == actual_bios_version
 
         if product_match and bios_version_match:
             LOG.debug('Specified product and BIOS version match; '
@@ -117,11 +118,16 @@ class SystemBiosHardwareManager(hardware.HardwareManager):
         elif product_match:
             LOG.debug('BIOS version did not match; attempting an update.')
             try:
-                _update_bios()
+                _handle_bios_update(actual_bios_version, expected_bios_version)
             except Exception as e:
                 # Log and pass through the exception so cleaning will fail
                 LOG.exception(e)
                 raise
             return True
         else:
-            raise errors.CleaningError(_PRODUCT_MISMATCH)
+            raise errors.CleaningError(
+                "Product did not match. Expected product '{0}', but the "
+                "actual product is '{1}'. Check that the product set in the "
+                "node's extra field under 'system_vendor/product' matches "
+                "the actual product.".format(expected_product_name,
+                                             actual_product_name))

@@ -53,7 +53,7 @@ class TestSystemBiosManager(unittest.TestCase):
         mock_execute.side_effect = [('PowerEdge R630\n', None),
                                     ('1.0\n', None)]
         self.assertRaisesRegexp(errors.CleaningError,
-                                system_bios._MANUAL_UPDATE_REQUIRED,
+                                "^(?=.*\\b2.3.4\\b)(?=.*\\b1.0\\b).*$",
                                 self.manager.verify_bios_version,
                                 self.node,
                                 None)
@@ -62,11 +62,12 @@ class TestSystemBiosManager(unittest.TestCase):
     def test_verify_bios_version_product_mismatch(self, mock_execute):
         mock_execute.side_effect = [('T4000\n', None),
                                     ('2.3.4\n', None)]
-        self.assertRaisesRegexp(errors.CleaningError,
-                                system_bios._PRODUCT_MISMATCH,
-                                self.manager.verify_bios_version,
-                                self.node,
-                                None)
+        self.assertRaisesRegexp(
+            errors.CleaningError,
+            "^(?=.*\\bPowerEdge R630\\b)(?=.*\\bT4000\\b).*$",
+            self.manager.verify_bios_version,
+            self.node,
+            None)
 
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
     def test_verify_bios_version_missing_product_name(self, mock_execute):

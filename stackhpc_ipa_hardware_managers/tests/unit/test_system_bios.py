@@ -48,6 +48,30 @@ class TestSystemBiosManager(unittest.TestCase):
                                     ('2.3.4\n', None)]
         self.assertTrue(self.manager.verify_bios_version(self.node, None))
 
+    def test_verify_bios_version_disabled(self):
+        for value in (True, 'true', 'on', 'y', 'yes'):
+            self._verify_bios_version_disabled(value)
+
+    @mock.patch('ironic_python_agent.utils.execute', autospec=True)
+    def _verify_bios_version_disabled(self, value, mock_execute):
+        self.node['extra']['disable_bios_version_check'] = value
+        self.assertTrue(self.manager.verify_bios_version(self.node, None))
+        # verify_bios_version must return before the mock is called
+        self.assertFalse(mock_execute.called)
+
+    def test_verify_bios_version_ok_explicitly_enabled(self):
+        for value in (False, 'false', 'off', 'n', 'no'):
+            self._verify_bios_version_ok_explicitly_enabled(value)
+
+    @mock.patch('ironic_python_agent.utils.execute', autospec=True)
+    def _verify_bios_version_ok_explicitly_enabled(self, value, mock_execute):
+        mock_execute.side_effect = [('PowerEdge R630\n', None),
+                                    ('2.3.4\n', None)]
+        self.node['extra']['disable_bios_version_check'] = value
+        self.assertTrue(self.manager.verify_bios_version(self.node, None))
+        # verify_bios_version must not return before the mock is called
+        self.assertTrue(mock_execute.called)
+
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
     def test_verify_bios_version_bios_mismatch(self, mock_execute):
         mock_execute.side_effect = [('PowerEdge R630\n', None),

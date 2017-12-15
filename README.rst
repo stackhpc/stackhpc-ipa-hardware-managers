@@ -40,6 +40,25 @@ The following examples may be used to set the node info.
 The hardware manager should be supported by any system which supports
 returning the product name and BIOS version via dmidecode.
 
+In the case that you wish to disable the hardware manager for specific nodes,
+you can set the following property in the nodes extra info:
+
+.. code-block::
+
+    openstack baremetal node set $NODE_ID --extra disable_bios_version_check=True
+
+If you wish to re-enable the hardware manager, you can either unset the property, or
+set it to `False`. For example:
+
+.. code-block::
+
+    openstack baremetal node set $NODE_ID --extra disable_bios_version_check=False
+
+or:
+
+.. code-block::
+
+    openstack baremetal node unset $NODE_ID --extra disable_bios_version_check
 
 Credits
 -------

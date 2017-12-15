@@ -18,8 +18,9 @@ from ironic_python_agent import hardware
 from ironic_python_agent import utils
 
 from oslo_concurrency import processutils
-
 from oslo_log import log
+from oslo_utils import strutils
+
 
 LOG = log.getLogger()
 
@@ -70,6 +71,12 @@ def _get_expected_property(node, node_property):
     return expected_property
 
 
+def _bios_verification_disabled(node):
+    disable_check = node['extra'].get('disable_bios_version_check')
+    return strutils.bool_from_string(
+        disable_check) if disable_check is not None else False
+
+
 class SystemBiosHardwareManager(hardware.HardwareManager):
     """Generic system BIOS manager"""
 
@@ -103,6 +110,10 @@ class SystemBiosHardwareManager(hardware.HardwareManager):
         To avoid the case where two different products may have the same BIOS
         version, we also check that the product is as expected.
         """
+        if _bios_verification_disabled(node):
+            LOG.warning('BIOS version verification has been disabled.')
+            return True
+
         expected_product_name = _get_expected_property(node, 'product_name')
         actual_product_name = _get_product()
         product_match = expected_product_name == actual_product_name

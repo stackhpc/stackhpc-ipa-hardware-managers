@@ -70,6 +70,17 @@ class TestSystemBiosManager(unittest.TestCase):
             None)
 
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
+    def test_verify_bios_version_missing_system_vendor(self, mock_execute):
+        mock_execute.side_effect = [('PowerEdge R630\n', None),
+                                    ('2.3.4\n', None)]
+        self.node['extra'].pop('system_vendor')
+        self.assertRaisesRegexp(errors.CleaningError,
+                                'system_vendor',
+                                self.manager.verify_bios_version,
+                                self.node,
+                                None)
+
+    @mock.patch('ironic_python_agent.utils.execute', autospec=True)
     def test_verify_bios_version_missing_product_name(self, mock_execute):
         mock_execute.side_effect = [('PowerEdge R640\n', None),
                                     ('2.3.4\n', None)]

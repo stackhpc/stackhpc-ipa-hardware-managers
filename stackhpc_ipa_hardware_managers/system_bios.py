@@ -31,7 +31,7 @@ def _get_property(dmidecode_property):
             "sudo dmidecode -s {}".format(dmidecode_property),
             shell=True)
     except (processutils.ProcessExecutionError, OSError) as e:
-            LOG.warning("Cannot read system property: {}".format(e))
+        LOG.warning("Cannot read system property: {}".format(e))
 
     system_property = system_property.rstrip()
     LOG.debug('System property: {}'.format(system_property))

@@ -21,6 +21,7 @@ import mock
 
 from stackhpc_ipa_hardware_managers import system_bios
 
+
 def get_dummy_node_info():
     return {
         'extra': {

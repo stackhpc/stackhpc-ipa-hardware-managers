@@ -21,22 +21,24 @@ import mock
 
 from stackhpc_ipa_hardware_managers import system_bios
 
-_DUMMY_NODE_INFO = {
-    'extra': {
-        'system_vendor': {
-            'product_name': 'PowerEdge R630',
-            'manufacturer': 'Dell Inc.',
-            'bios_version': '2.3.4'
+
+def get_dummy_node_info():
+    return {
+        'extra': {
+            'system_vendor': {
+                'product_name': 'PowerEdge R630',
+                'manufacturer': 'Dell Inc.',
+                'bios_version': '2.3.4'
+            }
         }
     }
-}
 
 
 class TestSystemBiosManager(unittest.TestCase):
 
     def setUp(self):
         self.manager = system_bios.SystemBiosHardwareManager()
-        self.node = dict(_DUMMY_NODE_INFO)
+        self.node = get_dummy_node_info()
 
     def test_evaluate_hardware_support(self):
         actual = self.manager.evaluate_hardware_support()

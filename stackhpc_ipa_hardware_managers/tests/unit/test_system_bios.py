@@ -21,17 +21,29 @@ import mock
 
 from stackhpc_ipa_hardware_managers import system_bios
 
+DUMMY_PRODUCT_NAME = 'PowerEdge R630'
+DUMMY_MANUFACTURER = 'Dell Inc.'
+DUMMY_SERIAL_NUMBER = '123456789'
+
 
 def get_dummy_node_info():
     return {
         'extra': {
             'system_vendor': {
-                'product_name': 'PowerEdge R630',
-                'manufacturer': 'Dell Inc.',
+                'product_name': DUMMY_PRODUCT_NAME,
+                'manufacturer': DUMMY_MANUFACTURER,
                 'bios_version': '2.3.4'
             }
         }
     }
+
+
+def get_dummy_system_vendor_info():
+    return hardware.SystemVendorInfo(
+        product_name=DUMMY_PRODUCT_NAME,
+        manufacturer=DUMMY_MANUFACTURER,
+        serial_number=DUMMY_SERIAL_NUMBER
+    )
 
 
 class TestSystemBiosManager(unittest.TestCase):
@@ -44,18 +56,24 @@ class TestSystemBiosManager(unittest.TestCase):
         actual = self.manager.evaluate_hardware_support()
         self.assertEqual(hardware.HardwareSupport.SERVICE_PROVIDER, actual)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_ok(self, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R630\n', None),
-                                    ('2.3.4\n', None)]
+    def test_verify_bios_version_ok(self, mock_execute, mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
+        mock_execute.side_effect = [('2.3.4\n', None)]
         self.assertTrue(self.manager.verify_bios_version(self.node, None))
 
     def test_verify_bios_version_disabled(self):
         for value in (True, 'true', 'on', 'y', 'yes'):
             self._verify_bios_version_disabled(value)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def _verify_bios_version_disabled(self, value, mock_execute):
+    def _verify_bios_version_disabled(self, value, mock_execute,
+                                      mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
         self.node['extra']['disable_bios_version_check'] = value
         self.assertTrue(self.manager.verify_bios_version(self.node, None))
         # verify_bios_version must return before the mock is called
@@ -65,29 +83,41 @@ class TestSystemBiosManager(unittest.TestCase):
         for value in (False, 'false', 'off', 'n', 'no'):
             self._verify_bios_version_ok_explicitly_enabled(value)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def _verify_bios_version_ok_explicitly_enabled(self, value, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R630\n', None),
-                                    ('2.3.4\n', None)]
+    def _verify_bios_version_ok_explicitly_enabled(self, value,
+                                                   mock_execute,
+                                                   mock_dispatch):
+        mock_execute.side_effect = [('2.3.4\n', None)]
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
         self.node['extra']['disable_bios_version_check'] = value
         self.assertTrue(self.manager.verify_bios_version(self.node, None))
         # verify_bios_version must not return before the mock is called
         self.assertTrue(mock_execute.called)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_bios_mismatch(self, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R630\n', None),
-                                    ('1.0\n', None)]
+    def test_verify_bios_version_bios_mismatch(self, mock_execute,
+                                               mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
+        mock_execute.side_effect = [('1.0\n', None)]
         self.assertRaisesRegexp(errors.CleaningError,
                                 "^(?=.*\\b2.3.4\\b)(?=.*\\b1.0\\b).*$",
                                 self.manager.verify_bios_version,
                                 self.node,
                                 None)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_product_mismatch(self, mock_execute):
-        mock_execute.side_effect = [('T4000\n', None),
-                                    ('2.3.4\n', None)]
+    def test_verify_bios_version_product_mismatch(self, mock_execute,
+                                                  mock_dispatch):
+        dummy_vendor_info = get_dummy_system_vendor_info()
+        dummy_vendor_info.product_name = "T4000"
+        mock_dispatch.return_value = dummy_vendor_info
+        mock_execute.side_effect = [('2.3.4\n', None)]
         self.assertRaisesRegexp(
             errors.CleaningError,
             "^(?=.*\\bPowerEdge R630\\b)(?=.*\\bT4000\\b).*$",
@@ -95,10 +125,13 @@ class TestSystemBiosManager(unittest.TestCase):
             self.node,
             None)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_missing_system_vendor(self, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R630\n', None),
-                                    ('2.3.4\n', None)]
+    def test_verify_bios_version_missing_system_vendor(self, mock_execute,
+                                                       mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
+        mock_execute.side_effect = [('2.3.4\n', None)]
         self.node['extra'].pop('system_vendor')
         self.assertRaisesRegexp(errors.CleaningError,
                                 'system_vendor',
@@ -106,10 +139,13 @@ class TestSystemBiosManager(unittest.TestCase):
                                 self.node,
                                 None)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_missing_product_name(self, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R640\n', None),
-                                    ('2.3.4\n', None)]
+    def test_verify_bios_version_missing_product_name(self, mock_execute,
+                                                      mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
+        mock_execute.side_effect = [('2.3.4\n', None)]
         self.node['extra']['system_vendor'].pop('product_name')
         self.assertRaisesRegexp(errors.CleaningError,
                                 'product_name',
@@ -117,10 +153,13 @@ class TestSystemBiosManager(unittest.TestCase):
                                 self.node,
                                 None)
 
+    @mock.patch('ironic_python_agent.hardware.dispatch_to_managers',
+                autospec=True)
     @mock.patch('ironic_python_agent.utils.execute', autospec=True)
-    def test_verify_bios_version_missing_bios_version(self, mock_execute):
-        mock_execute.side_effect = [('PowerEdge R640\n', None),
-                                    ('2.3.4\n', None)]
+    def test_verify_bios_version_missing_bios_version(self, mock_execute,
+                                                      mock_dispatch):
+        mock_dispatch.return_value = get_dummy_system_vendor_info()
+        mock_execute.side_effect = [('2.3.4\n', None)]
         self.node['extra']['system_vendor'].pop('bios_version')
         self.assertRaisesRegexp(errors.CleaningError,
                                 'bios_version',

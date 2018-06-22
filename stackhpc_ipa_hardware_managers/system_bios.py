@@ -39,10 +39,6 @@ def _get_property(dmidecode_property):
     return system_property
 
 
-def _get_product():
-    return _get_property('system-product-name')
-
-
 def _get_bios():
     return _get_property('bios-version')
 
@@ -114,8 +110,10 @@ class SystemBiosHardwareManager(hardware.HardwareManager):
             LOG.warning('BIOS version verification has been disabled.')
             return True
 
+        vendor_info = hardware.dispatch_to_managers('get_system_vendor_info')
+
         expected_product_name = _get_expected_property(node, 'product_name')
-        actual_product_name = _get_product()
+        actual_product_name = vendor_info.product_name
         product_match = expected_product_name == actual_product_name
 
         expected_bios_version = _get_expected_property(node, 'bios_version')

@@ -137,6 +137,6 @@ class SystemBiosHardwareManager(hardware.HardwareManager):
             raise errors.CleaningError(
                 "Product did not match. Expected product '{0}', but the "
                 "actual product is '{1}'. Check that the product set in the "
-                "node's extra field under 'system_vendor/product' matches "
-                "the actual product.".format(expected_product_name,
-                                             actual_product_name))
+                "node's extra field under 'system_vendor/product_name' "
+                "matches the actual product.".format(
+                    expected_product_name, actual_product_name))

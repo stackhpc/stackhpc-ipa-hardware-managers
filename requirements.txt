@@ -1,2 +1,3 @@
-ironic-python-agent
+ironic-python-agent<6.0.0;python_version<'3.0' # Apache-2.0
+ironic-python-agent;python_version>='3.0' # Apache-2.0
 oslo.log

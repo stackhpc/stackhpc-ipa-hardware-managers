@@ -62,7 +62,7 @@ def _get_expected_property(node, node_property):
             "Expected property '{0}' not found. For cleaning to proceed "
             "you must set the property 'system_vendor/{1}' in the node's "
             "extra field, for example: $ openstack baremetal node set "
-            "$NODE_ID --extra system_vendor/{1}=$VALUE".format(e.message,
+            "$NODE_ID --extra system_vendor/{1}=$VALUE".format(str(e),
                                                                node_property))
     return expected_property
 

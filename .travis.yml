@@ -1,6 +1,6 @@
 ---
 language: python
-python: "2.7"
+python: "3.6"
 
 # Run jobs in containers.
 sudo: false
@@ -12,6 +12,8 @@ env:
     - TOX_ENV=pep8
     # Run python2.7 unit tests.
     - TOX_ENV=py27
+    # Run python3.6 unit tests.
+    - TOX_ENV=py36
     # Run coverage tests
     - TOX_ENV=cover
 

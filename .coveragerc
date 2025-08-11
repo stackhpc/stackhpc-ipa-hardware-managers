@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = example_hardware_manager
+
+[report]
+ignore_errors = True

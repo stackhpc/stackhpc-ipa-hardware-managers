@@ -15,9 +15,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from ironic_python_agent import config
 from oslotest import base
 
 
 class TestCase(base.BaseTestCase):
 
     """Test case base class for all unit tests."""
+
+    def setUp(self):
+        super(TestCase, self).setUp()
+        config.populate_config()

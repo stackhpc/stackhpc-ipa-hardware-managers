@@ -1,7 +1,7 @@
 Prerequisites
 -------------
 
-Before you install and configure the TestService service,
+Before you install and configure the ExampleHardwareManager service,
 you must create a database, service credentials, and API endpoints.
 
 #. To create the database, complete these steps:
@@ -61,15 +61,15 @@ you must create a database, service credentials, and API endpoints.
 
      .. code-block:: console
 
-        $ openstack service create --name example_hardware_manager --description "TestService" testservice
+        $ openstack service create --name example_hardware_manager --description "ExampleHardwareManager" ExampleHardwareManager
 
-#. Create the TestService service API endpoints:
+#. Create the ExampleHardwareManager service API endpoints:
 
    .. code-block:: console
 
       $ openstack endpoint create --region RegionOne \
-        testservice public http://controller:XXXX/vY/%\(tenant_id\)s
+        ExampleHardwareManager public http://controller:XXXX/vY/%\(tenant_id\)s
       $ openstack endpoint create --region RegionOne \
-        testservice internal http://controller:XXXX/vY/%\(tenant_id\)s
+        ExampleHardwareManager internal http://controller:XXXX/vY/%\(tenant_id\)s
       $ openstack endpoint create --region RegionOne \
-        testservice admin http://controller:XXXX/vY/%\(tenant_id\)s
+        ExampleHardwareManager admin http://controller:XXXX/vY/%\(tenant_id\)s

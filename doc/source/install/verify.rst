@@ -3,7 +3,7 @@
 Verify operation
 ~~~~~~~~~~~~~~~~
 
-Verify operation of the TestService service.
+Verify operation of the ExampleHardwareManager service.
 
 .. note::
 
@@ -21,4 +21,4 @@ Verify operation of the TestService service.
 
    .. code-block:: console
 
-      $ openstack testservice service list
+      $ openstack ExampleHardwareManager service list

@@ -9,7 +9,7 @@ you need, the basics of interacting with our Gerrit review system, how we
 communicate as a community, etc.
 
 Below will cover the more project specific information you need to get started
-with TestService.
+with ExampleHardwareManager.
 
 Communication
 ~~~~~~~~~~~~~

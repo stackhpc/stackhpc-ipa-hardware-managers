@@ -2,11 +2,9 @@
 example_hardware_manager
 ===============================
 
-OpenStack Boilerplate contains all the boilerplate you need to create an OpenStack package.
+An Example Hardware Manager
 
-Please fill here a long description which must be at least 3 lines wrapped on
-80 cols, so that distribution package maintainers can use it in their packages.
-Note that this is a hard requirement.
+Demo for custom deploy, clean, service steps.
 
 * Free software: Apache license
 * Documentation: https://docs.openstack.org/example_hardware_manager/latest

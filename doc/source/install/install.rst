@@ -4,7 +4,7 @@ Install and configure
 ~~~~~~~~~~~~~~~~~~~~~
 
 This section describes how to install and configure the
-TestService service, code-named example_hardware_manager, on the controller node.
+ExampleHardwareManager service, code-named example_hardware_manager, on the controller node.
 
 This section assumes that you already have a working OpenStack
 environment with at least the following components installed:

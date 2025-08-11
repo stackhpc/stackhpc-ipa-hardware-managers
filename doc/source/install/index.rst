@@ -1,5 +1,5 @@
 ======================================
-TestService service installation guide
+ExampleHardwareManager service installation guide
 ======================================
 
 .. toctree::
@@ -10,7 +10,7 @@ TestService service installation guide
    verify.rst
    next-steps.rst
 
-The TestService service (example_hardware_manager) provides...
+The ExampleHardwareManager service (example_hardware_manager) provides...
 
 This chapter assumes a working setup of OpenStack following the
 `OpenStack Installation Tutorial

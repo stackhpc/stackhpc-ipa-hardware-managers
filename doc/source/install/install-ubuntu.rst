@@ -3,7 +3,7 @@
 Install and configure for Ubuntu
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This section describes how to install and configure the TestService
+This section describes how to install and configure the ExampleHardwareManager
 service for Ubuntu 14.04 (LTS).
 
 .. include:: common_prerequisites.rst
@@ -24,7 +24,7 @@ Install and configure components
 Finalize installation
 ---------------------
 
-Restart the TestService services:
+Restart the ExampleHardwareManager services:
 
 .. code-block:: console
 

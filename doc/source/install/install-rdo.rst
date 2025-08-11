@@ -4,7 +4,7 @@ Install and configure for Red Hat Enterprise Linux and CentOS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-This section describes how to install and configure the TestService service
+This section describes how to install and configure the ExampleHardwareManager service
 for Red Hat Enterprise Linux 7 and CentOS 7.
 
 .. include:: common_prerequisites.rst
@@ -23,7 +23,7 @@ Install and configure components
 Finalize installation
 ---------------------
 
-Start the TestService services and configure them to start when
+Start the ExampleHardwareManager services and configure them to start when
 the system boots:
 
 .. code-block:: console

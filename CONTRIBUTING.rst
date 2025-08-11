@@ -14,6 +14,6 @@ Bugs should be filed on Launchpad:
    https://bugs.launchpad.net/NA
 
 For more specific information about contributing to this repository, see the
-TestService contributor guide:
+ExampleHardwareManager contributor guide:
 
    https://docs.openstack.org/example_hardware_manager/latest/contributor/contributing.html

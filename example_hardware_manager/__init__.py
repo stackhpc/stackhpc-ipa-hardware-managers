@@ -12,10 +12,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from ironic_python_agent import config
 import pbr.version
-
-config.populate_config()
 
 
 __version__ = pbr.version.VersionInfo(

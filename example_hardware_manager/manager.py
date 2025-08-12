@@ -48,3 +48,4 @@ class ExampleHardwareManager(hardware.HardwareManager):
         fail_msg = node['extra'].get('example_clean_step_msg')
         if fail_msg:
             raise errors.CleaningError(fail_msg)
+        return True
